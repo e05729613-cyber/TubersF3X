@@ -1,0 +1,204 @@
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "TubersBack67Gui"
+screenGui.ResetOnSpawn = true
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 400, 0, 300)
+mainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
+mainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+mainFrame.BorderSizePixel = 0
+mainFrame.Active = true
+mainFrame.Draggable = false
+mainFrame.Parent = screenGui
+
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 20)
+corner.Parent = mainFrame
+
+local stroke = Instance.new("UIStroke")
+stroke.Thickness = 3
+stroke.Color = Color3.fromRGB(255, 255, 0)
+stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+stroke.Parent = mainFrame
+
+local dragging = false
+local dragStart, startPos
+
+mainFrame.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		dragging = true
+		dragStart = input.Position
+		startPos = mainFrame.Position
+	end
+end)
+
+mainFrame.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		dragging = false
+	end
+end)
+
+mainFrame.InputChanged:Connect(function(input)
+	if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+		local delta = input.Position - dragStart
+		mainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	end
+end)
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 50)
+title.BackgroundColor3 = Color3.fromRGB(255, 230, 0)
+title.Text = "TubersBack67 Gui Private"
+title.TextColor3 = Color3.fromRGB(0, 0, 0)
+title.Font = Enum.Font.GothamBold
+title.TextScaled = true
+title.Parent = mainFrame
+
+local titleCorner = Instance.new("UICorner")
+titleCorner.CornerRadius = UDim.new(0, 20)
+titleCorner.Parent = title
+
+local titleStroke = Instance.new("UIStroke")
+titleStroke.Thickness = 2
+titleStroke.Color = Color3.fromRGB(0, 0, 0)
+titleStroke.Parent = title
+
+local subtitle = Instance.new("TextLabel")
+subtitle.Size = UDim2.new(1, 0, 0, 25)
+subtitle.Position = UDim2.new(0, 0, 0, 50)
+subtitle.BackgroundColor3 = Color3.fromRGB(255, 230, 0)
+subtitle.Text = "Made by: TubersBack67"
+subtitle.TextColor3 = Color3.fromRGB(0, 0, 0)
+subtitle.Font = Enum.Font.Gotham
+subtitle.TextScaled = true
+subtitle.Parent = mainFrame
+
+local subCorner = Instance.new("UICorner")
+subCorner.CornerRadius = UDim.new(0, 20)
+subCorner.Parent = subtitle
+
+local subtitleStroke = Instance.new("UIStroke")
+subtitleStroke.Thickness = 2
+subtitleStroke.Color = Color3.fromRGB(0, 0, 0)
+subtitleStroke.Parent = subtitle
+
+local function createButton(text, posX, posY, callback)
+	local button = Instance.new("TextButton")
+	button.Size = UDim2.new(0, 180, 0, 50)
+	button.Position = UDim2.new(0, posX, 0, posY)
+	button.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+	button.Text = text
+	button.TextColor3 = Color3.fromRGB(255, 255, 255)
+	button.Font = Enum.Font.GothamBold
+	button.TextScaled = true
+	button.AutoButtonColor = true
+	button.Parent = mainFrame
+
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0, 15)
+	corner.Parent = button
+
+	local stroke = Instance.new("UIStroke")
+	stroke.Thickness = 2
+	stroke.Color = Color3.fromRGB(0, 0, 0)
+	stroke.Parent = button
+
+	button.MouseEnter:Connect(function()
+		button.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
+	end)
+	button.MouseLeave:Connect(function()
+		button.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+	end)
+
+	button.MouseButton1Click:Connect(function()
+		callback(button)
+	end)
+end
+
+createButton("Get f3x btools", 10, 100, function()
+	local ReplicatedStorage = game:GetService("ReplicatedStorage")
+	local RequestCommand = ReplicatedStorage:WaitForChild("HDAdminHDClient").Signals.RequestCommandSilent
+	RequestCommand:InvokeServer(";btools me")
+end)
+
+createButton("Skybox", 210, 100, function()
+	local player = game.Players.LocalPlayer
+	local char = player.Character
+	local tool
+	for i,v in player:GetDescendants() do if v.Name == "SyncAPI" then tool = v.Parent end end
+	for i,v in game.ReplicatedStorage:GetDescendants() do if v.Name == "SyncAPI" then tool = v.Parent end end
+	local remote = tool.SyncAPI.ServerEndpoint
+	function _(args) remote:InvokeServer(unpack(args)) end
+
+	function CreatePart(cf,parent) _( {"CreatePart","Normal",cf,parent} ) end
+	function SetName(part,stringg) _( {"SetName",{part},stringg} ) end
+	function AddMesh(part) _( {"CreateMeshes",{{Part = part}}} ) end
+	function SetMesh(part,meshid) _( {"SyncMesh",{{Part = part,MeshId="rbxassetid://"..meshid}}} ) end
+	function SetTexture(part,texid) _( {"SyncMesh",{{Part = part,TextureId="rbxassetid://"..texid}}} ) end
+	function MeshResize(part,size) _( {"SyncMesh",{{Part = part,Scale=size}}} ) end
+	function SetLocked(part,bool) _( {"SetLocked",{part},bool} ) end
+
+	function Sky(id)
+		local e,f,g = char.HumanoidRootPart.CFrame.x,char.HumanoidRootPart.CFrame.y,char.HumanoidRootPart.CFrame.z
+		CreatePart(CFrame.new(math.floor(e),math.floor(f),math.floor(g))+Vector3.new(0,6,0),workspace)
+		for i,v in workspace:GetDescendants() do
+			if v:IsA("BasePart") and v.CFrame.x == math.floor(e) and v.CFrame.z == math.floor(g) then
+				SetName(v,"Sky")
+				AddMesh(v)
+				SetMesh(v,"111891702759441")
+				SetTexture(v,id)
+				MeshResize(v,Vector3.new(99999,99999,99999))
+				SetLocked(v,true)
+			end
+		end
+	end
+
+	Sky("73177065762139")
+end)
+
+createButton("Decal Spam", 10, 160, function()
+	local player = game.Players.LocalPlayer
+	local char = player.Character
+	local tool
+	for i,v in player:GetDescendants() do if v.Name == "SyncAPI" then tool = v.Parent end end
+	for i,v in game.ReplicatedStorage:GetDescendants() do if v.Name == "SyncAPI" then tool = v.Parent end end
+	local remote = tool.SyncAPI.ServerEndpoint
+	function _(args) remote:InvokeServer(unpack(args)) end
+
+	function SpawnDecal(part,side) _( {"CreateTextures",{{Part = part,Face = side,TextureType = "Decal"}}} ) end
+	function AddDecal(part,asset,side) _( {"SyncTexture",{{Part = part,Face = side,TextureType="Decal",Texture="rbxassetid://"..asset}}} ) end
+
+	function spam(id)
+		for i,v in workspace:GetDescendants() do
+			if v:IsA("BasePart") then
+				spawn(function()
+					for _,side in pairs(Enum.NormalId:GetEnumItems()) do
+						SpawnDecal(v, side)
+						AddDecal(v, id, side)
+					end
+				end)
+			end
+		end
+	end
+	spam("104466108020636")
+end)
+
+createButton("Message", 210, 160, function()
+	local ReplicatedStorage = game:GetService("ReplicatedStorage")
+	local RequestCommand = ReplicatedStorage:WaitForChild("HDAdminHDClient").Signals.RequestCommandSilent
+	RequestCommand:InvokeServer(";sm Team TubersBack67 Join Today")
+end)
+
+createButton("Billboard GUI", 10, 220, function()
+	local ReplicatedStorage = game:GetService("ReplicatedStorage")
+	local RequestCommand = ReplicatedStorage:WaitForChild("HDAdminHDClient").Signals.RequestCommandSilent
+	RequestCommand:InvokeServer(";titler me TubersBack67")
+end)
+
+createButton("Music", 210, 220, function()
+	local ReplicatedStorage = game:GetService("ReplicatedStorage")
+	local RequestCommand = ReplicatedStorage:WaitForChild("HDAdminHDClient").Signals.RequestCommandSilent
+	RequestCommand:InvokeServer(";music 80776947525537")
+	RequestCommand:InvokeServer(";volume inf")
+end)
